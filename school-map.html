@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aiden 学区地图 · 上海宝山 & 香港校网14</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "PingFang SC", "Microsoft YaHei", sans-serif; background: #f8fafc; color: #1e293b; }
+    header {
+      padding: 16px 20px; background: #20364b; color: #fff;
+      display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;
+    }
+    header h1 { margin: 0; font-size: 1.15rem; font-weight: 600; }
+    .tabs { display: flex; gap: 8px; }
+    .tabs button {
+      border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer;
+      background: rgba(255,255,255,0.15); color: #fff; font-size: 0.9rem;
+    }
+    .tabs button.active { background: #fff; color: #20364b; font-weight: 600; }
+    #map { height: calc(100vh - 120px); min-height: 420px; }
+    .legend {
+      padding: 10px 20px; background: #fff; border-top: 1px solid #e2e8f0;
+      font-size: 0.82rem; display: flex; flex-wrap: wrap; gap: 16px;
+    }
+    .legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+    .stars { color: #f59e0b; letter-spacing: 1px; }
+    .leaflet-popup-content { margin: 10px 12px; line-height: 1.45; font-size: 0.88rem; }
+    .leaflet-popup-content h3 { margin: 0 0 6px; font-size: 0.95rem; color: #20364b; }
+    .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; margin-right: 4px; }
+    .tag-main { background: #dcfce7; color: #166534; }
+    .tag-alt { background: #dbeafe; color: #1e40af; }
+    .tag-warn { background: #ffedd5; color: #9a3412; }
+    .tag-gray { background: #f1f5f9; color: #475569; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Aiden 学区地图</h1>
+    <div class="tabs">
+      <button type="button" id="tab-sh" class="active">上海宝山</button>
+      <button type="button" id="tab-hk">香港校网14</button>
+      <button type="button" id="tab-all">双城对照</button>
+    </div>
+  </header>
+  <div id="map"></div>
+  <div class="legend">
+    <span><span class="dot" style="background:#ef4444"></span> 家庭住址 / 参考锚点</span>
+    <span><span class="dot" style="background:#16a34a"></span> 推荐度 ★★★★★ 主选</span>
+    <span><span class="dot" style="background:#2563eb"></span> ★★★★ 备选/强相关</span>
+    <span><span class="dot" style="background:#d97706"></span> ★★★ 有条件</span>
+    <span class="stars">★ = 推荐度（1–5）</span>
+    <span>公开版 · 住址已脱敏</span>
+  </div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const stars = (n) => "★".repeat(n) + "☆".repeat(5 - n);
+
+    function roleTag(role) {
+      if (/主选|首选|名校/.test(role)) return `<span class="tag tag-main">${role}</span>`;
+      if (/备选|保底|校网/.test(role)) return `<span class="tag tag-alt">${role}</span>`;
+      if (/超预算/.test(role)) return `<span class="tag tag-warn">${role}</span>`;
+      return `<span class="tag tag-gray">${role}</span>`;
+    }
+
+    function popupHtml(s, anchor) {
+      const cost = s.annualCostRMB || s.annualCostHKD || "—";
+      const commute = s.commuteMin ? `约 <b>${s.commuteMin} 分钟</b>（${s.commuteNote || ""}）` : (s.commuteNote || "2030+ 回港路径");
+      const from = anchor ? `相对 <b>${anchor.name}</b>` : "相对起点";
+      return `<h3>${s.name}</h3>
+        ${roleTag(s.role)}
+        <span class="tag tag-gray">${s.stage}</span><br/>
+        <span class="stars">${stars(s.recommend)}</span> 推荐度 ${s.recommend}/5<br/>
+        ${from} · ${commute}<br/>
+        年费用：<b>${cost}</b>`;
+    }
+
+    function homePopup(h) {
+      return `<h3>${h.name}</h3><span class="tag tag-main">起点</span><br/>${h.address}<br/><small>${h.note || ""}</small>`;
+    }
+
+    let map, layerSh, layerHk, data;
+
+    async function init() {
+      const res = await fetch("schools-geo.json");
+      data = await res.json();
+      map = L.map("map", { scrollWheelZoom: true });
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "© OpenStreetMap"
+      }).addTo(map);
+
+      layerSh = L.layerGroup();
+      layerHk = L.layerGroup();
+
+      const homeIcon = L.divIcon({
+        className: "",
+        html: '<div style="width:14px;height:14px;background:#ef4444;border:2px solid #fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.35)"></div>',
+        iconSize: [14, 14], iconAnchor: [7, 7]
+      });
+
+      const shHome = L.marker([data.home.lat, data.home.lng], { icon: homeIcon })
+        .bindPopup(homePopup(data.home));
+      layerSh.addLayer(shHome);
+
+      data.schools.filter(s => s.city === "shanghai").forEach(s => {
+        const m = L.circleMarker([s.lat, s.lng], {
+          radius: 9, fillColor: s.color, color: "#fff", weight: 2, fillOpacity: 0.9
+        }).bindPopup(popupHtml(s, data.home));
+        layerSh.addLayer(m);
+      });
+
+      const hkIcon = L.divIcon({
+        className: "",
+        html: '<div style="width:14px;height:14px;background:#ef4444;border:2px solid #fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.35)"></div>',
+        iconSize: [14, 14], iconAnchor: [7, 7]
+      });
+      const hkHome = L.marker([data.hkAnchor.lat, data.hkAnchor.lng], { icon: hkIcon })
+        .bindPopup(homePopup(data.hkAnchor));
+      layerHk.addLayer(hkHome);
+
+      data.schools.filter(s => s.city === "hongkong").forEach(s => {
+        const m = L.circleMarker([s.lat, s.lng], {
+          radius: 9, fillColor: s.color, color: "#fff", weight: 2, fillOpacity: 0.9
+        }).bindPopup(popupHtml(s, data.hkAnchor));
+        layerHk.addLayer(m);
+      });
+
+      layerSh.addTo(map);
+      map.setView([data.home.lat, data.home.lng], 12);
+
+      document.getElementById("tab-sh").onclick = () => {
+        map.removeLayer(layerHk); layerSh.addTo(map);
+        map.setView([data.home.lat, data.home.lng], 12);
+        setActive("tab-sh");
+      };
+      document.getElementById("tab-hk").onclick = () => {
+        map.removeLayer(layerSh); layerHk.addTo(map);
+        map.setView([data.hkAnchor.lat, data.hkAnchor.lng], 15);
+        setActive("tab-hk");
+      };
+      document.getElementById("tab-all").onclick = () => {
+        layerSh.addTo(map); layerHk.addTo(map);
+        map.fitBounds(L.latLngBounds(
+          [data.home.lat, data.home.lng],
+          [data.hkAnchor.lat, data.hkAnchor.lng]
+        ), { padding: [40, 40], maxZoom: 5 });
+        setActive("tab-all");
+      };
+    }
+
+    function setActive(id) {
+      document.querySelectorAll(".tabs button").forEach(b => b.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+    }
+
+    init();
+  </script>
+</body>
+</html>
