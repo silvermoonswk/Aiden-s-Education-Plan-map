@@ -1,4 +1,19 @@
 {
+  "ratingSchema": {
+    "commute": "通勤方便度（5=最近最省事）",
+    "prestige": "学校名气（5=口碑/排名最高）",
+    "pressure": "压力适宜度（5=低压力/幼园友好；1=高压卷）",
+    "outcomes": "学生出路（5=升学出口最广、成果最好）",
+    "advancement": "升学优势（5=衔接下阶段最强，如一条龙/对口）",
+    "recommend": "综合推荐度（加权平均，见 docs/05）"
+  },
+  "ratingWeights": {
+    "commute": 0.25,
+    "prestige": 0.15,
+    "pressure": 0.2,
+    "outcomes": 0.25,
+    "advancement": 0.15
+  },
   "home": {
     "id": "home",
     "name": "家庭住址（宝山）",
@@ -33,6 +48,13 @@
       "commuteMin": 20,
       "commuteNote": "驾车接送",
       "annualCostRMB": "12-13万",
+      "ratings": {
+        "commute": 5,
+        "prestige": 4,
+        "pressure": 5,
+        "outcomes": 4,
+        "advancement": 4
+      },
       "recommend": 5,
       "role": "主选",
       "color": "#16a34a"
@@ -48,6 +70,13 @@
       "commuteMin": 30,
       "commuteNote": "驾车接送",
       "annualCostRMB": "13-14万",
+      "ratings": {
+        "commute": 4,
+        "prestige": 4,
+        "pressure": 4,
+        "outcomes": 4,
+        "advancement": 4
+      },
       "recommend": 4,
       "role": "备选",
       "color": "#2563eb"
@@ -63,6 +92,13 @@
       "commuteMin": 30,
       "commuteNote": "驾车接送",
       "annualCostRMB": "16-17万",
+      "ratings": {
+        "commute": 4,
+        "prestige": 4,
+        "pressure": 3,
+        "outcomes": 4,
+        "advancement": 5
+      },
       "recommend": 3,
       "role": "超预算备选",
       "color": "#d97706"
@@ -78,6 +114,13 @@
       "commuteMin": 25,
       "commuteNote": "公办统筹",
       "annualCostRMB": "0.6-1万",
+      "ratings": {
+        "commute": 4,
+        "prestige": 2,
+        "pressure": 4,
+        "outcomes": 3,
+        "advancement": 3
+      },
       "recommend": 3,
       "role": "公办保底",
       "color": "#64748b"
@@ -93,6 +136,13 @@
       "commuteMin": 30,
       "commuteNote": "幼升小摇号",
       "annualCostRMB": "小约8.4万",
+      "ratings": {
+        "commute": 4,
+        "prestige": 5,
+        "pressure": 3,
+        "outcomes": 5,
+        "advancement": 5
+      },
       "recommend": 4,
       "role": "小学主选",
       "color": "#7c3aed"
@@ -108,6 +158,13 @@
       "commuteMin": 15,
       "commuteNote": "地段对口待核实",
       "annualCostRMB": "公办免费",
+      "ratings": {
+        "commute": 5,
+        "prestige": 3,
+        "pressure": 4,
+        "outcomes": 4,
+        "advancement": 4
+      },
       "recommend": 4,
       "role": "条件保底",
       "color": "#0891b2"
@@ -123,6 +180,13 @@
       "commuteMin": 5,
       "commuteNote": "步行/驾车极近",
       "annualCostHKD": "免费（官津）",
+      "ratings": {
+        "commute": 5,
+        "prestige": 4,
+        "pressure": 4,
+        "outcomes": 4,
+        "advancement": 4
+      },
       "recommend": 5,
       "role": "校网14官津首选",
       "color": "#16a34a"
@@ -138,6 +202,13 @@
       "commuteMin": 8,
       "commuteNote": "驾车约8分钟",
       "annualCostHKD": "免费（官立）",
+      "ratings": {
+        "commute": 5,
+        "prestige": 4,
+        "pressure": 3,
+        "outcomes": 4,
+        "advancement": 4
+      },
       "recommend": 4,
       "role": "校网14官立",
       "color": "#2563eb"
@@ -153,6 +224,13 @@
       "commuteMin": 10,
       "commuteNote": "驾车约10分钟",
       "annualCostHKD": "免费（津贴）",
+      "ratings": {
+        "commute": 5,
+        "prestige": 5,
+        "pressure": 3,
+        "outcomes": 5,
+        "advancement": 5
+      },
       "recommend": 5,
       "role": "校网14名校",
       "color": "#dc2626"
@@ -168,6 +246,13 @@
       "commuteMin": 8,
       "commuteNote": "驾车约8分钟",
       "annualCostHKD": "免费（官津）",
+      "ratings": {
+        "commute": 5,
+        "prestige": 3,
+        "pressure": 4,
+        "outcomes": 4,
+        "advancement": 4
+      },
       "recommend": 4,
       "role": "校网14官津",
       "color": "#2563eb"
@@ -183,6 +268,13 @@
       "commuteMin": 8,
       "commuteNote": "北角区内 · 驾车约8分钟",
       "annualCostHKD": "约2-4万/年",
+      "ratings": {
+        "commute": 5,
+        "prestige": 3,
+        "pressure": 4,
+        "outcomes": 4,
+        "advancement": 5
+      },
       "recommend": 4,
       "role": "校网14直资一条龙",
       "color": "#9333ea"
@@ -198,6 +290,13 @@
       "commuteMin": 10,
       "commuteNote": "北角区内 · 驾车约10分钟",
       "annualCostHKD": "约1.5-2万/年",
+      "ratings": {
+        "commute": 5,
+        "prestige": 3,
+        "pressure": 3,
+        "outcomes": 4,
+        "advancement": 4
+      },
       "recommend": 4,
       "role": "校网14直资小",
       "color": "#9333ea"
@@ -213,6 +312,13 @@
       "commuteMin": 12,
       "commuteNote": "铜锣湾 · 驾车约12分钟",
       "annualCostHKD": "约3.8万/年",
+      "ratings": {
+        "commute": 5,
+        "prestige": 4,
+        "pressure": 5,
+        "outcomes": 4,
+        "advancement": 5
+      },
       "recommend": 5,
       "role": "直资小主选",
       "color": "#9333ea"
@@ -228,6 +334,13 @@
       "commuteMin": 28,
       "commuteNote": "薄扶林 · 驾车约28分钟",
       "annualCostHKD": "约4.7万/年",
+      "ratings": {
+        "commute": 3,
+        "prestige": 5,
+        "pressure": 3,
+        "outcomes": 5,
+        "advancement": 5
+      },
       "recommend": 5,
       "role": "直资中一条龙",
       "color": "#9333ea"
@@ -243,6 +356,13 @@
       "commuteMin": 25,
       "commuteNote": "将军澳 · 驾车约25分钟",
       "annualCostHKD": "约3.5-4.4万/年",
+      "ratings": {
+        "commute": 4,
+        "prestige": 4,
+        "pressure": 3,
+        "outcomes": 5,
+        "advancement": 5
+      },
       "recommend": 5,
       "role": "直资一条龙",
       "color": "#9333ea"
@@ -258,6 +378,13 @@
       "commuteMin": 22,
       "commuteNote": "将军澳 · 驾车约22分钟",
       "annualCostHKD": "约2.5-4万/年",
+      "ratings": {
+        "commute": 4,
+        "prestige": 3,
+        "pressure": 4,
+        "outcomes": 4,
+        "advancement": 5
+      },
       "recommend": 4,
       "role": "直资一条龙",
       "color": "#9333ea"
@@ -273,6 +400,13 @@
       "commuteMin": 22,
       "commuteNote": "将军澳 · 无呈分试直升",
       "annualCostHKD": "待核实",
+      "ratings": {
+        "commute": 4,
+        "prestige": 3,
+        "pressure": 5,
+        "outcomes": 4,
+        "advancement": 5
+      },
       "recommend": 4,
       "role": "直资小（愉快学习）",
       "color": "#9333ea"
@@ -288,6 +422,13 @@
       "commuteMin": 25,
       "commuteNote": "半山 · 驾车约25分钟",
       "annualCostHKD": "约3.2万/年",
+      "ratings": {
+        "commute": 4,
+        "prestige": 5,
+        "pressure": 2,
+        "outcomes": 5,
+        "advancement": 5
+      },
       "recommend": 4,
       "role": "传统名校直资小",
       "color": "#9333ea"
@@ -303,6 +444,13 @@
       "commuteMin": 30,
       "commuteNote": "大围沙田 · 驾车约30分钟",
       "annualCostHKD": "约2-9万/年",
+      "ratings": {
+        "commute": 3,
+        "prestige": 4,
+        "pressure": 3,
+        "outcomes": 5,
+        "advancement": 4
+      },
       "recommend": 5,
       "role": "插班/内地背景热门",
       "color": "#9333ea"
@@ -318,6 +466,13 @@
       "commuteMin": 18,
       "commuteNote": "九龙湾 · 驾车约18分钟",
       "annualCostHKD": "约3-5万/年",
+      "ratings": {
+        "commute": 4,
+        "prestige": 3,
+        "pressure": 3,
+        "outcomes": 4,
+        "advancement": 4
+      },
       "recommend": 4,
       "role": "插班现实梯队",
       "color": "#9333ea"
@@ -333,6 +488,13 @@
       "commuteMin": 28,
       "commuteNote": "半山 · 驾车约28分钟",
       "annualCostHKD": "约7-10万/年",
+      "ratings": {
+        "commute": 3,
+        "prestige": 5,
+        "pressure": 1,
+        "outcomes": 5,
+        "advancement": 5
+      },
       "recommend": 4,
       "role": "顶尖直资（极难）",
       "color": "#9333ea"
@@ -348,6 +510,13 @@
       "commuteMin": 28,
       "commuteNote": "深水埗 · 驾车约28分钟",
       "annualCostHKD": "待核实",
+      "ratings": {
+        "commute": 3,
+        "prestige": 5,
+        "pressure": 1,
+        "outcomes": 5,
+        "advancement": 5
+      },
       "recommend": 3,
       "role": "顶尖男校直资",
       "color": "#9333ea"

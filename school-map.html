@@ -34,6 +34,9 @@
     .tag-alt { background: #dbeafe; color: #1e40af; }
     .tag-warn { background: #ffedd5; color: #9a3412; }
     .tag-dss { background: #f3e8ff; color: #6b21a8; }
+    .tag-gray { background: #f1f5f9; color: #475569; }
+    .rating-row { font-size: 0.8rem; margin: 2px 0; }
+    .rating-label { display: inline-block; width: 4.5em; color: #64748b; }
   </style>
 </head>
 <body>
@@ -50,7 +53,7 @@
     <span><span class="dot" style="background:#9333ea"></span> 直资（DSS）</span>
     <span><span class="dot" style="background:#16a34a"></span> 官津/津贴 主选</span>
     <span><span class="dot" style="background:#2563eb"></span> 官津备选</span>
-    <span class="stars">★ = 推荐度 · 港校通勤=驾车从丹拿花园</span>
+    <span class="stars">弹窗含五维评分 · 港校通勤=驾车从丹拿花园</span>
   </div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
@@ -72,6 +75,21 @@
       return `<span class="tag ${cls}">${t}</span>`;
     }
 
+    const RATING_LABELS = {
+      commute: "通勤",
+      prestige: "名气",
+      pressure: "压力适宜",
+      outcomes: "出路",
+      advancement: "升学"
+    };
+
+    function ratingsHtml(s) {
+      if (!s.ratings) return "";
+      return Object.entries(RATING_LABELS).map(([k, label]) =>
+        `<div class="rating-row"><span class="rating-label">${label}</span><span class="stars">${stars(s.ratings[k] || 0)}</span></div>`
+      ).join("") + `<div class="rating-row" style="margin-top:4px"><span class="rating-label"><b>综合</b></span><span class="stars">${stars(s.recommend)}</span> ${s.recommend}/5</div>`;
+    }
+
     function popupHtml(s, anchor) {
       const cost = s.annualCostRMB || s.annualCostHKD || "—";
       const commute = s.commuteMin ? `约 <b>${s.commuteMin} 分钟</b>（${s.commuteNote || ""}）` : (s.commuteNote || "2030+ 回港路径");
@@ -79,9 +97,9 @@
       return `<h3>${s.name}</h3>
         ${roleTag(s.role)} ${typeTag(s)}
         <span class="tag tag-gray">${s.stage}</span><br/>
-        <span class="stars">${stars(s.recommend)}</span> 推荐度 ${s.recommend}/5<br/>
         ${from} · ${commute}<br/>
-        年费用：<b>${cost}</b>`;
+        年费用：<b>${cost}</b><br/>
+        ${ratingsHtml(s)}`;
     }
 
     function homePopup(h) {
