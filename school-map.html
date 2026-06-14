@@ -33,7 +33,7 @@
     .tag-main { background: #dcfce7; color: #166534; }
     .tag-alt { background: #dbeafe; color: #1e40af; }
     .tag-warn { background: #ffedd5; color: #9a3412; }
-    .tag-gray { background: #f1f5f9; color: #475569; }
+    .tag-dss { background: #f3e8ff; color: #6b21a8; }
   </style>
 </head>
 <body>
@@ -47,12 +47,10 @@
   </header>
   <div id="map"></div>
   <div class="legend">
-    <span><span class="dot" style="background:#ef4444"></span> 家庭住址 / 参考锚点</span>
-    <span><span class="dot" style="background:#16a34a"></span> 推荐度 ★★★★★ 主选</span>
-    <span><span class="dot" style="background:#2563eb"></span> ★★★★ 备选/强相关</span>
-    <span><span class="dot" style="background:#d97706"></span> ★★★ 有条件</span>
-    <span class="stars">★ = 推荐度（1–5）</span>
-    <span>公开版 · 住址已脱敏</span>
+    <span><span class="dot" style="background:#9333ea"></span> 直资（DSS）</span>
+    <span><span class="dot" style="background:#16a34a"></span> 官津/津贴 主选</span>
+    <span><span class="dot" style="background:#2563eb"></span> 官津备选</span>
+    <span class="stars">★ = 推荐度 · 港校通勤=驾车从丹拿花园</span>
   </div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
@@ -65,12 +63,21 @@
       return `<span class="tag tag-gray">${role}</span>`;
     }
 
+    const TYPE_LABEL = { dss: "直资", gov: "官立", aided: "津贴", private: "民办", public: "公办" };
+
+    function typeTag(s) {
+      const t = TYPE_LABEL[s.schoolType] || "";
+      if (!t) return "";
+      const cls = s.schoolType === "dss" ? "tag-dss" : "tag-gray";
+      return `<span class="tag ${cls}">${t}</span>`;
+    }
+
     function popupHtml(s, anchor) {
       const cost = s.annualCostRMB || s.annualCostHKD || "—";
       const commute = s.commuteMin ? `约 <b>${s.commuteMin} 分钟</b>（${s.commuteNote || ""}）` : (s.commuteNote || "2030+ 回港路径");
       const from = anchor ? `相对 <b>${anchor.name}</b>` : "相对起点";
       return `<h3>${s.name}</h3>
-        ${roleTag(s.role)}
+        ${roleTag(s.role)} ${typeTag(s)}
         <span class="tag tag-gray">${s.stage}</span><br/>
         <span class="stars">${stars(s.recommend)}</span> 推荐度 ${s.recommend}/5<br/>
         ${from} · ${commute}<br/>
@@ -121,9 +128,19 @@
       layerHk.addLayer(hkHome);
 
       data.schools.filter(s => s.city === "hongkong").forEach(s => {
-        const m = L.circleMarker([s.lat, s.lng], {
-          radius: 9, fillColor: s.color, color: "#fff", weight: 2, fillOpacity: 0.9
-        }).bindPopup(popupHtml(s, data.hkAnchor));
+        const isDss = s.schoolType === "dss";
+        const m = isDss
+          ? L.marker([s.lat, s.lng], {
+              icon: L.divIcon({
+                className: "",
+                html: `<div style="width:12px;height:12px;background:${s.color};border:2px solid #fff;transform:rotate(45deg);box-shadow:0 1px 4px rgba(0,0,0,.35)"></div>`,
+                iconSize: [12, 12], iconAnchor: [6, 6]
+              })
+            })
+          : L.circleMarker([s.lat, s.lng], {
+              radius: 9, fillColor: s.color, color: "#fff", weight: 2, fillOpacity: 0.9
+            });
+        m.bindPopup(popupHtml(s, data.hkAnchor));
         layerHk.addLayer(m);
       });
 
